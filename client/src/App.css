@@ -1,0 +1,15 @@
+/* App-level styles */
+.app {
+  height: 100%;
+  width: 100%;
+}
+
+/* Ensure modals render on top */
+.modal-overlay {
+  z-index: 1000;
+}
+
+/* Prevent body scroll when modal is open */
+body.modal-open {
+  overflow: hidden;
+}

@@ -1,0 +1,1 @@
+{"version":3,"file":"migrate.js","sourceRoot":"","sources":["../../src/db/migrate.ts"],"names":[],"mappings":";;AAAA,mCAAsC;AAEtC,OAAO,CAAC,GAAG,CAAC,gCAAgC,CAAC,CAAC;AAE9C,MAAM,EAAE,GAAG,IAAA,mBAAW,GAAE,CAAC;AAEzB,OAAO,CAAC,GAAG,CAAC,oCAAoC,CAAC,CAAC;AAClD,OAAO,CAAC,GAAG,CAAC,oBAAoB,EAAE,OAAO,CAAC,GAAG,EAAE,GAAG,iBAAiB,CAAC,CAAC"}

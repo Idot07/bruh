@@ -1,0 +1,24 @@
+.writing-pad {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.writing-pad-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  pointer-events: auto;
+}
+
+/* Fabric.js selection styles */
+.canvas-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  touch-action: none;
+}
