@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { Icon } from '../Icon';
 import './Toolbar.css';
 
 interface ToolbarProps {
@@ -16,14 +18,14 @@ interface ToolbarProps {
 export type Tool = 'pen' | 'eraser' | 'highlighter' | 'text' | 'rectangle' | 'circle' | 'arrow' | 'select';
 
 const TOOLS: { id: Tool; label: string; icon: string; cursor: string }[] = [
-  { id: 'select', label: 'Select', icon: '🖱️', cursor: 'default' },
-  { id: 'pen', label: 'Pen', icon: '✏️', cursor: 'crosshair' },
-  { id: 'eraser', label: 'Eraser', icon: '🧽', cursor: 'cell' },
-  { id: 'highlighter', label: 'Highlighter', icon: '🖍️', cursor: 'crosshair' },
-  { id: 'text', label: 'Text', icon: '📝', cursor: 'text' },
-  { id: 'rectangle', label: 'Rectangle', icon: '⬜', cursor: 'crosshair' },
-  { id: 'circle', label: 'Circle', icon: '⭕', cursor: 'crosshair' },
-  { id: 'arrow', label: 'Arrow', icon: '➡️', cursor: 'crosshair' },
+  { id: 'select', label: 'Select', icon: 'mouse-pointer', cursor: 'default' },
+  { id: 'pen', label: 'Pen', icon: 'pen', cursor: 'crosshair' },
+  { id: 'eraser', label: 'Eraser', icon: 'eraser', cursor: 'cell' },
+  { id: 'highlighter', label: 'Highlighter', icon: 'highlighter', cursor: 'crosshair' },
+  { id: 'text', label: 'Text', icon: 'type', cursor: 'text' },
+  { id: 'rectangle', label: 'Rectangle', icon: 'square', cursor: 'crosshair' },
+  { id: 'circle', label: 'Circle', icon: 'circle', cursor: 'crosshair' },
+  { id: 'arrow', label: 'Arrow', icon: 'arrow-right', cursor: 'crosshair' },
 ];
 
 const PRESET_COLORS = [
@@ -74,7 +76,7 @@ export function Toolbar({
               aria-checked={activeTool === tool.id}
               style={{ cursor: tool.cursor }}
             >
-              {tool.icon}
+              <Icon name={tool.icon} size={18} />
             </button>
           ))}
         </div>
@@ -144,7 +146,7 @@ export function Toolbar({
             disabled={!canUndo}
             title="Undo (Ctrl+Z)"
           >
-            ↶
+            <Icon name="undo" size={16} />
           </button>
           <button
             className="icon-btn"
@@ -152,12 +154,10 @@ export function Toolbar({
             disabled={!canRedo}
             title="Redo (Ctrl+Y)"
           >
-            ↷
+            <Icon name="redo" size={16} />
           </button>
         </div>
       </div>
     </div>
   );
 }
-
-import { useState } from 'react';
