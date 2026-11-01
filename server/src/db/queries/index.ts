@@ -13,18 +13,20 @@ export function now(): number {
 export const subjectQueries = {
   getAll: (): (Subject & { yearCount: number })[] => {
     const db = getDatabase();
-    return db.prepare(`
+    const rows = db.prepare(`
       SELECT s.*, COUNT(y.id) as yearCount
       FROM subjects s
       LEFT JOIN years y ON y.subject_id = s.id
       GROUP BY s.id
       ORDER BY s.name
-    `).all() as (Subject & { yearCount: number })[];
+    `).all() as any[];
+    return rows.map(r => ({ ...transformSubject(r), yearCount: r.yearCount }));
   },
 
   getById: (id: string): Subject | undefined => {
     const db = getDatabase();
-    return db.prepare('SELECT * FROM subjects WHERE id = ?').get(id) as Subject | undefined;
+    const row = db.prepare('SELECT * FROM subjects WHERE id = ?').get(id) as any;
+    return row ? transformSubject(row) : undefined;
   },
 
   create: (subject: Omit<Subject, 'id' | 'createdAt' | 'updatedAt'>): Subject => {
@@ -36,20 +38,19 @@ export const subjectQueries = {
       INSERT INTO subjects (id, name, code, color, created_at, updated_at)
       VALUES (?, ?, ?, ?, ?, ?)
     `).run(id, newSubject.name, newSubject.code ?? null, newSubject.color ?? null, timestamp, timestamp);
-    return newSubject;
+    return transformSubject({ ...newSubject, created_at: timestamp, updated_at: timestamp });
   },
 
   update: (id: string, updates: Partial<Omit<Subject, 'id' | 'createdAt'>>): Subject | undefined => {
     const db = getDatabase();
-    const existing = subjectQueries.getById(id);
-    if (!existing) return undefined;
+    const existingRow = db.prepare('SELECT * FROM subjects WHERE id = ?').get(id) as any;
+    if (!existingRow) return undefined;
+    const existing = transformSubject(existingRow);
     
     const updated = { ...existing, ...updates, updatedAt: now() };
-    const fields = ['name', 'code', 'color', 'updated_at'];
-    const values = fields.map(f => updated[f === 'updated_at' ? 'updatedAt' : f as keyof Subject]);
     db.prepare(`
       UPDATE subjects SET name = ?, code = ?, color = ?, updated_at = ? WHERE id = ?
-    `).run(...values, id);
+    `).run(updated.name, updated.code ?? null, updated.color ?? null, updated.updatedAt, id);
     return updated;
   },
 
@@ -479,3 +480,42 @@ export const annotationQueries = {
     db.prepare('DELETE FROM annotations WHERE page_id = ?').run(pageId);
   }
 };
+// Helper to transform snake_case to camelCase
+function transformSubject(row: any): Subject {
+  if (!row) return row;
+  return {
+    id: row.id,
+    name: row.name,
+    code: row.code,
+    color: row.color,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+function transformYear(row: any): Year {
+  if (!row) return row;
+  return {
+    id: row.id,
+    subjectId: row.subject_id,
+    year: row.year,
+    label: row.label,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+function transformPaper(row: any): Paper {
+  if (!row) return row;
+  return {
+    id: row.id,
+    subjectYearId: row.subject_year_id,
+    filename: row.filename,
+    originalName: row.original_name,
+    uploadDate: row.upload_date,
+    totalPages: row.total_pages,
+    solvedStatus: row.solved_status,
+    tags: typeof row.tags === 'string' ? JSON.parse(row.tags) : row.tags,
+    thumbnailPath: row.thumbnail_path,
+  };
+}
