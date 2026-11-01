@@ -1,1 +1,41 @@
 /* Uses shared modal styles from UploadDialog.css - no additional styles needed */
+/* Ensure color picker is visible */
+.color-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.color-option {
+  width: 40px;
+  height: 40px;
+  border: 2px solid transparent;
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  transition: all var(--motion-fast) var(--ease-spring);
+  position: relative;
+  padding: 0;
+}
+
+.color-option:hover {
+  transform: scale(1.1);
+  border-color: var(--color-text);
+  box-shadow: var(--shadow-md);
+}
+
+.color-option.selected {
+  border-color: var(--color-brand);
+  transform: scale(1.1);
+  box-shadow: 0 0 0 2px var(--color-surface), 0 0 0 4px var(--color-brand);
+}
+
+.custom-color {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  padding: 0;
+  background: transparent;
+}

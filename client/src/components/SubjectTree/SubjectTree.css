@@ -127,13 +127,15 @@
 }
 
 .subject-name {
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0;
   font-size: var(--text-body);
   font-weight: var(--font-weight-medium);
   color: var(--color-text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  line-height: var(--line-height-snug);
   letter-spacing: var(--tracking-tight);
 }
 

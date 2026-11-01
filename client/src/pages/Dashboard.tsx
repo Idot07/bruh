@@ -109,12 +109,19 @@ export function Dashboard() {
     }
   }, [deletePaper]);
 
+  const totalSubjects = subjects.length;
+  const totalYears = subjects.reduce((sum, s) => sum + (s.years?.length || 0), 0);
+  const totalPapers = subjects.reduce((sum, s) => {
+    const years = s.years || [];
+    return sum + years.reduce((ysum, y) => ysum + (y.paperCount || 0), 0);
+  }, 0);
+
   return (
     <div className="dashboard">
       <div className="dashboard-header">
         <h1>PDF Past Paper Manager</h1>
         <div className="header-actions">
-          <button className="btn-primary" onClick={() => setShowUpload(true)} disabled={!selectedSubjectId || !selectedYearId}>
+          <button className="btn-primary" onClick={() => setShowUpload(true)}>
             Upload PDF
           </button>
         </div>
@@ -162,9 +169,63 @@ export function Dashboard() {
             </div>
           ) : (
             <div className="welcome">
-              <h2>Welcome</h2>
-              <p>Create a subject to get started, or select one from the sidebar.</p>
-              <button className="btn-primary" onClick={handleCreateSubject}>Create Your First Subject</button>
+              <div className="welcome-hero">
+                <h2>Organize Your Past Papers</h2>
+                <p>Upload, manage, and solve PDF past papers with an integrated digital writing pad. Everything organized by subject and year.</p>
+                <div className="welcome-actions">
+                  <button className="btn-primary" onClick={handleCreateSubject}>Create Your First Subject</button>
+                  <button className="btn-secondary" onClick={() => setShowUpload(true)}>Upload a Paper</button>
+                </div>
+              </div>
+              <div className="stats-grid">
+                <div className="stat-card">
+                  <div className="stat-icon">📚</div>
+                  <div className="stat-info">
+                    <div className="stat-value">{totalSubjects}</div>
+                    <div className="stat-label">Subjects</div>
+                  </div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-icon">📅</div>
+                  <div className="stat-info">
+                    <div className="stat-value">{totalYears}</div>
+                    <div className="stat-label">Years</div>
+                  </div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-icon">📄</div>
+                  <div className="stat-info">
+                    <div className="stat-value">{totalPapers}</div>
+                    <div className="stat-label">Papers</div>
+                  </div>
+                </div>
+              </div>
+              {subjects.length > 0 && (
+                <div className="subjects-overview">
+                  <h3>Your Subjects</h3>
+                  <div className="subjects-grid">
+                    {subjects.map(subject => {
+                      const subjectYears = subject.years || [];
+                      const subjectPapers = subjectYears.reduce((sum, y) => sum + (y.paperCount || 0), 0);
+                      const subjectColor = subject.color || '#3b82f6';
+                      return (
+                        <button key={subject.id} className="subject-card" onClick={() => handleSubjectSelect(subject.id)} style={{ '--subject-color': subjectColor } as React.CSSProperties}>
+                          <div className="subject-card-header">
+                            <span className="subject-card-dot" style={{ backgroundColor: subjectColor }}></span>
+                            <span className="subject-card-name">{subject.name}</span>
+                            {subject.code && <span className="subject-card-code">{subject.code}</span>}
+                          </div>
+                          <div className="subject-card-stats">
+                            <span>{subjectYears.length} year{subjectYears.length !== 1 ? 's' : ''}</span>
+                            <span>•</span>
+                            <span>{subjectPapers} paper{subjectPapers !== 1 ? 's' : ''}</span>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </main>
